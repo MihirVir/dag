@@ -1,29 +1,23 @@
-import os
-
-class DagProcessor():
-    def __init__(self, base_folder_path: str="dags"):
-        self.base_folder_path = base_folder_path
-        self.dag_files = self.get_dag_files_from_folder()
-
-    def get_dag_files_from_folder(self) -> list:
-        '''
-        returns list of dag files in the Dag Directory to process it
-        '''
-        dag_folder = os.path.join(self.base_folder_path)
-        files = [f for f in os.listdir(dag_folder)]
-
-        return files
-
-    def process_dag_files(self) -> str: 
-        dags = {}
-
-        for file in self.dag_files: 
-            file_path = os.path.join(self.base_folder_path, file)
-            
+from core.dag_processor import dag
 
 def main():
-    dag_processor = DagProcessor()
-    dag_processor.process_dag_files()
+    @dag(dag_id="sample_dag", start_date="2023-01-01", scheduled_interval="@daily")
+    def example_dag(dag_obj):
+        def extract():
+            print("Extracting...")
 
+        def transform():
+            print("Transforming...")
+
+        def load():
+            print("Loading...")
+
+        dag_obj.create_task("123", extract)
+        dag_obj.create_task("123", transform)
+        dag_obj.create_task("123", load)
+    
+    dag_instance = example_dag()
+    dag_instance.run()
+    
 if __name__ == "__main__":
     main()
