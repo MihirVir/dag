@@ -8,6 +8,7 @@ def main():
 
         def transform():
             print("Transforming...")
+            raise Exception("Simulating a failure in our system")
 
         def load():
             print("Loading...")
