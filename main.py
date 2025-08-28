@@ -1,24 +1,30 @@
-from core.dag_processor import dag
+from core.tasks import Task, TaskState
+from core.workflow import Workflow
 
-def main():
-    @dag(dag_id="sample_dag", start_date="2023-01-01", scheduled_interval="@daily")
-    def example_dag(dag_obj):
-        def extract():
-            print("Extracting...")
+def task_a_fn():
+    print("Executing Task A")
 
-        def transform():
-            print("Transforming...")
-            raise Exception("Simulating a failure in our system")
+def task_b_fn():
+    print("Executing Task B")
 
-        def load():
-            print("Loading...")
+def task_c_fn():
+    print("Executing Task C")
 
-        dag_obj.create_task("123", extract)
-        dag_obj.create_task("123", transform)
-        dag_obj.create_task("123", load)
-    
-    dag_instance = example_dag()
-    dag_instance.run()
-    
-if __name__ == "__main__":
-    main()
+# Create workflow
+wf = Workflow("LinkedListWorkflow")
+
+# Create tasks
+t1 = Task("A", task_a_fn)
+t2 = Task("B", task_b_fn)
+t3 = Task("C", task_c_fn)
+
+# Add tasks to workflow
+wf.add_task(t1)
+wf.add_task(t2)
+wf.add_task(t3)
+
+# Chain tasks
+t1 >> t2 >> t3
+
+# Run workflow
+wf.run()
